@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "I2C.h"
+#include "BME680.h"
 
 char *i2c_bus = "/dev/i2c-1";
 #define SLAVE_ADDR 0x77
