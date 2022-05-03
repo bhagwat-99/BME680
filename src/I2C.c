@@ -62,14 +62,15 @@ int i2c_write(unsigned char slave_addr, unsigned char reg, unsigned char *data_t
 }
 
 
+
 // Read the given I2C slave device's register and return the read value in `*result`:
-unsigned char * i2c_read(unsigned char slave_addr, unsigned char reg, unsigned char NBytes) 
+unsigned char * i2c_read(unsigned char slave_addr, unsigned char reg_addr, unsigned char n_bytes) 
 {
     
     // +1 for Number of bytes + reg address 
-    unsigned char data_write[NBytes+1];
+    unsigned char data_write[n_bytes+1];
 
-    data_write[0]=reg;
+    data_write[0]=reg_addr;
 
 
     struct i2c_msg msgs[2];
@@ -82,14 +83,16 @@ unsigned char * i2c_read(unsigned char slave_addr, unsigned char reg, unsigned c
 
     msgs[1].addr = slave_addr;
     msgs[1].flags = I2C_M_RD;
-    msgs[1].len = NBytes;
+    msgs[1].len = n_bytes;
     msgs[1].buf = data_read;
 
     msgset[0].msgs = msgs;
     msgset[0].nmsgs = 2;
 
-    if (ioctl(fd_i2c, I2C_RDWR, &msgset) < 0) {
+    if (ioctl(fd_i2c, I2C_RDWR, &msgset) < 0)
+    {
         perror("ioctl(I2C_RDWR) in i2c_read");
+        return NULL;
     }
     
     return data_read;
